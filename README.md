@@ -18,8 +18,23 @@
 
 ## start Spring-Security
 1. Add dependency
+```bash
 
+    compile('org.springframework.boot:spring-boot-starter-security')
+
+```
 2. Java Configuration
+```bash
+
+    @EnableWebSecurity // Automatically, contain SpringSecurityFilterChain
+    public class SecurityConfig extends WebSecurityConfigurerAdapter{
+        ...   
+    }
+
+```
 
 3. Implementation UserDetails
-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
+
+
+
+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

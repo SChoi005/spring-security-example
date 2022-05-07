@@ -37,7 +37,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
     compile('org.springframework.boot:spring-boot-starter-security')
-	
+	runtime('org.springframework.boot:spring-boot-devtools')
+    implementation ('org.springframework.boot:spring-boot-starter-thymeleaf')
 	/* Web 
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-hateoas')
