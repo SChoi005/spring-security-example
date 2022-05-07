@@ -2,7 +2,6 @@ package project.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import project.enumeration.Role;
 
 @Getter
 @Setter
@@ -14,5 +13,5 @@ public class UserDto{
     
     private String password;
     
-    private Role role;
+    private String role;
 }
