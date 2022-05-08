@@ -53,7 +53,84 @@
     ```
 3. Implementation UserDetails
 
-//signup 완료 sign in 작성 해야함
+    ```java
+        
+        public class User implements UserDetails {
+    
+            @Id
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private Long id;
+
+            private String username;
+
+            private String password;
+
+            private String role;
+
+            @Override
+            public String getPassword() {
+                return password;
+            }
+
+            @Override
+            public String getUsername() {
+                return username;
+            }
+
+            // Return Authority lists user has
+            @Override
+            public Collection<? extends GrantedAuthority> getAuthorities() {
+                ArrayList<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
+                auth.add(new SimpleGrantedAuthority(role));
+                return auth;
+            }
+
+            @Override
+            public boolean isEnabled() {
+                return true;
+            }
+
+            @Override
+            public boolean isCredentialsNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isAccountNonExpired() {
+                return true;
+            }
+
+            @Override
+            public boolean isAccountNonLocked() {
+                return true;
+            }
+        }
+    
+    ```
+4. Implementation UserDetailsService
+
+    ```java
+        
+        @Service
+        public class UserService implements UserDetailsService{
+
+            ...
+
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                User user = userRepository.findByUsername(username);
+                if(user != null)
+                    return user;
+                else
+                    throw new UsernameNotFoundException(username);
+            }
+
+        }
+        
+    ```
+
+
+//sign in 작성 해야함
 
 
 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
