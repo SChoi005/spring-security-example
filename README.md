@@ -128,9 +128,26 @@
         }
         
     ```
+    
+## Login ways
+
+<ul>
+    <li><strong>Session&#38;cookie</strong>
+        <ul>
+            <li></li>
+        </ul>
+    </li>
+    <li><strong>JWT(Json Web Token) token</strong>
+        <ul>
+            <li>Stateless</li>
+        </ul>
+    </li>
+    <li><strong>OAuth(Open Authentication)</strong></li>
+
+</ul>
 
 
 //sign in 작성 해야함
 
 
-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
+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

@@ -1,7 +1,10 @@
 package project.controller;
 
+import com.mysql.fabric.Response;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +26,6 @@ public class UserController{
     public ResponseEntity<?> signUp(@RequestBody UserDto userDto) throws Exception{
         return ResponseEntity.ok().body(userService.createUser(userDto));
     } 
-    
     
     
 }
