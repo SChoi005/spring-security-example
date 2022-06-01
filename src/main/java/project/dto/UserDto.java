@@ -1,5 +1,8 @@
 package project.dto;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 import lombok.Getter;
 import lombok.Setter;
 

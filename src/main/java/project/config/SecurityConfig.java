@@ -37,8 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         
-        String[] permmited = {"/login",
-                              "/api/user/signUp"
+        String[] permmited = {
+                              "/api/user/signUp","/"
                              };
         // Setting cors, csrf 
         http = http.cors().and().csrf().disable();
@@ -49,13 +49,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         // Session
         http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).and();
         
-        // Setting permission of end point
+        // Setting permission of end point and authorize
         http.authorizeRequests()
-            .antMatchers(permmited).permitAll()
-            .anyRequest().authenticated()
+                .antMatchers(permmited).permitAll()
+                .antMatchers("/professor").hasRole("PROFESSOR")
+                .antMatchers("/student").hasAnyRole("STUDENT","PROFESSOR")
             .and()
-            .formLogin();
-           
+                .formLogin()
+                .loginPage("/")
+                .defaultSuccessUrl("/student")
+                .usernameParameter("userID") // Coincide loginform name
+            .and()
+                .logout()
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+            .and()
+                .exceptionHandling()
+                .accessDeniedPage("/accessDenied");
         
     }
 }

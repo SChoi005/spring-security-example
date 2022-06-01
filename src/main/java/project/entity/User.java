@@ -3,8 +3,10 @@ package project.entity;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,7 +34,9 @@ public class User implements UserDetails {
     
     private String password;
     
-    private String role;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
     
     @Override
     public String getPassword() {
@@ -47,8 +51,8 @@ public class User implements UserDetails {
     // Return Authority lists user has
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        ArrayList<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-        auth.add(new SimpleGrantedAuthority(role));
+        ArrayList<GrantedAuthority> auth = new ArrayList<>();
+        auth.add(new SimpleGrantedAuthority(role.toString()));
         return auth;
     }
     

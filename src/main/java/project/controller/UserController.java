@@ -26,6 +26,4 @@ public class UserController{
     public ResponseEntity<?> signUp(@RequestBody UserDto userDto) throws Exception{
         return ResponseEntity.ok().body(userService.createUser(userDto));
     } 
-    
-    
 }

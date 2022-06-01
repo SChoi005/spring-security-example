@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import project.dto.UserDto;
 import project.entity.User;
+import project.enumeration.Role;
 import project.repository.UserRepository;
 
 @Service
@@ -25,9 +26,10 @@ public class UserService implements UserDetailsService{
             User user = new User();
             user.setUsername(userDto.getUsername());
             user.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
-            user.setRole(userDto.getRole());
+            user.setRole(Role.valueOf(userDto.getRole()));
             userRepository.save(user);
 
+            
             return userDto;
         }
     }

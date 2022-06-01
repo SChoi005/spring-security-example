@@ -65,7 +65,9 @@
 
             private String password;
 
-            private String role;
+            @Column(name = "role")
+            @Enumerated(EnumType.STRING)
+            private Role role;
 
             @Override
             public String getPassword() {
@@ -80,8 +82,8 @@
             // Return Authority lists user has
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
-                ArrayList<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
-                auth.add(new SimpleGrantedAuthority(role));
+                ArrayList<GrantedAuthority> auth = new ArrayList<>();
+                auth.add(new SimpleGrantedAuthority(role.toString()));
                 return auth;
             }
 
@@ -146,8 +148,5 @@
 
 </ul>
 
-
-//sign in 작성 해야함
-
-
-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
+1. spring security 세션 처리 공부
+2. 쿠키처리방법 공부
