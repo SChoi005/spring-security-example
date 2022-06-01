@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import project.enumeration.Role;
 
@@ -24,6 +25,7 @@ import project.enumeration.Role;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of= {"username"})
 public class User implements UserDetails {
     
     @Id

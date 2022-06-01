@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,13 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                               "/api/user/signUp","/"
                              };
         // Setting cors, csrf 
-        http = http.cors().and().csrf().disable();
-        
-        // JWT => stateless
-        //http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
-        
-        // Session
-        http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).and();
+        http.cors().and().csrf().disable();
         
         // Setting permission of end point and authorize
         http.authorizeRequests()
@@ -63,9 +59,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .logout()
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
             .and()
                 .exceptionHandling()
                 .accessDeniedPage("/accessDenied");
         
+        // Session management
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) 
+                .sessionFixation()
+                .changeSessionId()
+                .maximumSessions(1) 
+                .maxSessionsPreventsLogin(false) 
+                .expiredUrl("/")
+                .sessionRegistry(sessionRegistry())
+            .and()
+                .invalidSessionUrl("/"); 
     }
+    
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+    
 }

@@ -1,5 +1,18 @@
 # Spring-Security
 
+## Http Protocol Characteristic 
+1. <strong>Connectionless</strong>
+   * When a client and server exchange a request and a response once, disconnect.
+2. <strong>Stateless</strong>
+   * After communication, not stay state information
+* <strong>So, due to these characteristics, can stay information of user authentication, using Session&#38;Cookie or jwt. </strong>  
+
+## Login ways
+
+* <strong>Session&#38;Cookie</strong>
+* <strong>JWT(Json Web Token) token</strong>
+* <strong>OAuth(Open Authentication)</strong>
+
 ## Basic Terms
 <ul>
 <li><strong>Principal</strong> : Target to access to protected resource.</li>
@@ -48,9 +61,75 @@
         @EnableWebSecurity // Automatically, contain SpringSecurityFilterChain
         public class SecurityConfig extends WebSecurityConfigurerAdapter{
             ...   
+            
+            @Override
+            protected void configure(HttpSecurity http) throws Exception {
+
+                String[] permmited = {
+                                      "/api/user/signUp","/"
+                                     };
+                // Setting cors, csrf 
+                http.cors().and().csrf().disable();
+
+                // Setting permission of end point and authorize
+                http.authorizeRequests()
+                        .antMatchers(permmited).permitAll()
+                        .antMatchers("/professor").hasRole("PROFESSOR")
+                        .antMatchers("/student").hasAnyRole("STUDENT","PROFESSOR")
+                    .and()
+                        .formLogin()
+                        .loginPage("/")
+                        .defaultSuccessUrl("/student")
+                        .usernameParameter("userID") // Coincide loginform name
+                    .and()
+                        .logout()
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                    .and()
+                        .exceptionHandling()
+                        .accessDeniedPage("/accessDenied");
+
+                // Session management
+                http.sessionManagement()
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .sessionFixation()
+                        .changeSessionId()
+                        .maximumSessions(1) 
+                        .maxSessionsPreventsLogin(false)
+                        .expiredUrl("/")
+                        .sessionRegistry(sessionRegistry())
+                    .and()
+                        .invalidSessionUrl("/");
+                        
+            }
+
+            @Bean
+            public SessionRegistry sessionRegistry() {
+                return new SessionRegistryImpl();
+            }
         }
 
     ```
+    * <strong>``` sessionCreationPolicy(SessionCreationPolicy.ALWAYS) ```</strong> => Setting session creation policy
+      * <strong>SessionCreationPolicy.ALWAYS </strong>      => Always create session
+      * <strong>SessionCreationPolicy.IF_REQUIRED</strong>  => (Basic)Create when be required
+      * <strong>SessionCreationPolicy.NEVER</strong>        => Not create, but if session is existed, use it
+      * <strong>SessionCreationPolicy.STATELESS</strong>    => Not create, use existed session(JWT)
+    * <strong>``` sessionFixation() ```</strong> => Setting about session-fixation attack
+      * <strong>changeSessionId()</strong> => Issue new sessionId, and capable of using prior session
+      * <strong>newSession()</strong>      => Issue new sessionId, and not capable of using prior session
+      * <strong>none()</strong>            => Nothing
+    * <strong>``` maximumSessions(1) ```</strong> => Restrict maximum session 
+    * <strong>``` maxSessionsPreventsLogin(false) ```</strong>
+      * <strong>True</strong> => Later user's session is blocked 
+        * If don't normally logout and close browser, occur anyone doesn't login
+      * <strong>False</strong> => Prior user's session is expired
+    * <strong>``` expiredUrl("/") ```</strong> => Url when dupliciate login
+    * <strong>``` sessionRegistry(sessionRegistry()) ```</strong>
+      * If not add sessionRegistry(sessionRegistry()), when user login again after logout, occur error "Maximum sessions of 1 for this principal exceeded".
+    * <strong>``` invalidSessionUrl("/") ```</strong> => Url when session is expired
+    
 3. Implementation UserDetails
 
     ```java
@@ -130,23 +209,3 @@
         }
         
     ```
-    
-## Login ways
-
-<ul>
-    <li><strong>Session&#38;cookie</strong>
-        <ul>
-            <li></li>
-        </ul>
-    </li>
-    <li><strong>JWT(Json Web Token) token</strong>
-        <ul>
-            <li>Stateless</li>
-        </ul>
-    </li>
-    <li><strong>OAuth(Open Authentication)</strong></li>
-
-</ul>
-
-1. spring security 세션 처리 공부
-2. 쿠키처리방법 공부
